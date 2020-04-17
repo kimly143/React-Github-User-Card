@@ -1,26 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import GithubUserCard from './components/GithubUserCard'
 
 class App extends React.Component {
-  componentDidMount(){
-    
-  }
+	state = { users: [] };
+	componentDidMount() {
+		fetch('https://api.github.com/users/kimly143/followers', {
+			headers: { authorization: `token ${process.env.REACT_APP_GITHUB_API_KEY}` }
+		})
+			.then((res) => {
+				console.log(res);
+				return res.json();
+			})
+			.then((json) => {
+				console.log(json);
+				this.setState({ users: json });
+			});
+	}
 
 	render() {
-		return (
-			<div className="App">
-				<header className="App-header">
-					<img src={logo} className="App-logo" alt="logo" />
-					<p>
-						Edit <code>src/App.js</code> and save to reload.
-					</p>
-					<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-						Learn React
-					</a>
-				</header>
-			</div>
-		);
+		return <div className="App">{this.state.users.map((user) => <GithubUserCard user={user} />)}</div>;
 	}
 }
 
